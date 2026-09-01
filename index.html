@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>greetings ng mga IT</title>
+<style>
+  :root {
+    --sky-top: #FFF8E4;
+    --sky-mid: #FFE9A0;
+    --sky-bottom: #FFD93D;
+    --sun-glow: #FFF3C0;
+    --aurora-gold: #FFE27A;
+    --aurora-peach: #FFD3AE;
+    --aurora-mint: #D3F2DE;
+    --aurora-blush: #F6D8EA;
+    --petal: #F7C325;
+    --ink: #4A3016;
+    --center: #7A431F;
+    --stem: #5B7B3A;
+    --leaf: #6B9142;
+    --grass: #8BB84E;
+    --grass-dark: #557A2E;
+    --hen-body: #FFF6E2;
+    --comb: #E23B2E;
+    --beak: #F2A93B;
+    --wing: #E8B45B;
+    --tail: #B9843C;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html, body {
+    height: 100%;
+    overflow: hidden;
+    background: linear-gradient(180deg, var(--sky-top) 0%, var(--sky-mid) 55%, var(--sky-bottom) 100%);
+    position: relative;
+  }
+
+  .glow {
+    position: absolute;
+    top: -20%;
+    right: -10%;
+    width: 55vw;
+    height: 55vw;
+    border-radius: 50%;
+    background: radial-gradient(circle, var(--sun-glow) 0%, rgba(255,243,192,0) 70%);
+    pointer-events: none;
+  }
+
+  /* dreamy drifting aurora ribbons, kept warm/gold so the sky still reads yellow */
+  .aurora {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+    filter: blur(50px);
+  }
+  .ribbon {
+    position: absolute;
+    width: 130vw;
+    height: 40vh;
+    left: -15vw;
+    border-radius: 50%;
+    mix-blend-mode: soft-light;
+    opacity: 0.55;
+  }
+  .r1 { top: -6vh;  background: radial-gradient(ellipse at 30% 50%, var(--aurora-gold) 0%, transparent 70%); animation: drift1 22s ease-in-out infinite; }
+  .r2 { top: 8vh;   background: radial-gradient(ellipse at 60% 50%, var(--aurora-mint) 0%, transparent 70%); animation: drift2 28s ease-in-out infinite; }
+  .r3 { top: 2vh;   background: radial-gradient(ellipse at 45% 50%, var(--aurora-blush) 0%, transparent 70%); animation: drift3 25s ease-in-out infinite; }
+  .r4 { top: 14vh;  background: radial-gradient(ellipse at 70% 50%, var(--aurora-peach) 0%, transparent 70%); animation: drift1 30s ease-in-out infinite reverse; }
+
+  @keyframes drift1 { 0%,100% { transform: translateX(0) translateY(0) scale(1); } 50% { transform: translateX(4vw) translateY(2vh) scale(1.08); } }
+  @keyframes drift2 { 0%,100% { transform: translateX(0) translateY(0) scale(1); } 50% { transform: translateX(-5vw) translateY(-1vh) scale(1.05); } }
+  @keyframes drift3 { 0%,100% { transform: translateX(0) translateY(0) scale(1); } 50% { transform: translateX(3vw) translateY(3vh) scale(0.95); } }
+
+  /* a touch of depth in the upper sky so stars have something to pop against — still yellow, not black */
+  .sky-depth {
+    position: absolute;
+    inset: 0;
+    height: 60vh;
+    background: linear-gradient(180deg, rgba(120,78,10,0.16) 0%, rgba(120,78,10,0.05) 55%, rgba(120,78,10,0) 100%);
+    mix-blend-mode: multiply;
+    pointer-events: none;
+  }
+
+  .stars { position: absolute; inset: 0; pointer-events: none; }
+  .star {
+    position: absolute;
+    border-radius: 50%;
+    background: radial-gradient(circle, #FFFFFF 0%, #CFE8FF 55%, rgba(207,232,255,0) 100%);
+    box-shadow: 0 0 8px 2px rgba(180, 222, 255, 0.9);
+    animation: twinkle ease-in-out infinite;
+  }
+  @keyframes twinkle {
+    0%, 100% { opacity: 0.35; transform: scale(0.8); }
+    50% { opacity: 1; transform: scale(1.25); }
+  }
+
+  /* faint paper grain over everything, crayon-on-paper feel */
+  .grain {
+    position: absolute;
+    inset: 0;
+    mix-blend-mode: multiply;
+    opacity: 0.06;
+    pointer-events: none;
+  }
+
+  .field {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 50vh;
+    display: flex;
+    align-items: flex-end;
+    pointer-events: none;
+  }
+
+  .sunflower { transform-origin: bottom center; }
+  .sway { transform-origin: bottom center; animation: sway 4.5s ease-in-out infinite; }
+  .sway svg { display: block; overflow: visible; }
+
+  @keyframes sway {
+    0%, 100% { transform: rotate(-3.5deg); }
+    50% { transform: rotate(3.5deg); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .sway { animation: none; }
+    .ribbon { animation: none; }
+    .star { animation: none; opacity: 0.7; }
+    .hen-fly { animation: none; left: 40%; top: 20%; }
+  }
+
+  /* gift box — medium-large, same crayon-doodle aesthetic as the flowers */
+  .gift-wrap {
+    position: fixed;
+    left: 50%;
+    bottom: 10px;
+    transform: translateX(-50%);
+    width: clamp(340px, 54vw, 580px);
+    z-index: 3;
+  }
+  .box-body { display: block; width: 100%; }
+  .box-lid {
+    position: absolute;
+    left: 50%;
+    top: -13%;
+    width: 108%;
+    transform: translate(-50%, 0);
+    cursor: pointer;
+    transform-origin: 15% 100%;
+    transition: transform 0.6s cubic-bezier(.3,.7,.3,1), opacity 0.5s ease 0.15s;
+  }
+  .box-lid:hover { transform: translate(-50%, -3px) scale(1.02); }
+  .gift-wrap.opened .box-lid {
+    transform: translate(-20%, -70px) rotate(-30deg);
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .paper {
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    width: clamp(320px, 74vw, 620px);
+    max-height: 84vh;
+    overflow-y: auto;
+    background:
+      radial-gradient(circle at 15% 18%, rgba(201,154,74,0.14), transparent 42%),
+      radial-gradient(circle at 88% 78%, rgba(201,154,74,0.12), transparent 46%),
+      linear-gradient(180deg, #FFFDF6 0%, #FFF6E0 100%);
+    clip-path: polygon(
+      2% 0%, 10% 1.6%, 18% 0%, 28% 1.2%, 38% 0%, 48% 1.6%, 58% 0%, 68% 1.2%, 78% 0%, 88% 1.6%, 100% 0.5%,
+      99% 14%, 100% 27%, 98.4% 40%, 100% 53%, 98.7% 66%, 100% 79%, 98.5% 92%, 100% 100%,
+      90% 99%, 80% 100%, 70% 98.5%, 60% 100%, 50% 99%, 40% 100%, 30% 98.5%, 20% 100%, 10% 99%, 0% 100%,
+      0.8% 88%, 0% 75%, 1.4% 62%, 0% 49%, 1.2% 36%, 0% 23%, 1.6% 10%, 0% 2%
+    );
+    filter: drop-shadow(0 16px 22px rgba(74,48,22,0.32));
+    padding: 44px 34px 36px;
+    opacity: 0;
+    transform: translate(-50%, -40%) scale(0.55) rotate(-3deg);
+    transition: opacity 0.55s ease, transform 0.55s cubic-bezier(.2,.8,.2,1);
+    pointer-events: none;
+    z-index: 60;
+  }
+  .paper.show {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1) rotate(-1.5deg);
+    pointer-events: auto;
+  }
+  .paper-tape {
+    position: absolute;
+    top: -16px;
+    left: 50%;
+    transform: translateX(-50%) rotate(-3deg);
+    width: 90px;
+    height: 32px;
+    background: rgba(247, 195, 37, 0.55);
+    border: 2px dashed var(--ink);
+    opacity: 0.8;
+  }
+  .paper-close {
+    position: absolute;
+    top: 14px;
+    right: 18px;
+    background: none;
+    border: none;
+    font-size: 20px;
+    color: var(--ink);
+    cursor: pointer;
+    line-height: 1;
+  }
+  .paper-content {
+    min-height: 260px;
+    color: var(--ink);
+    font-family: Georgia, serif;
+    font-size: 18px;
+    line-height: 1.65;
+  }
+  .paper-greeting {
+    font-size: 27px;
+    font-weight: bold;
+    margin-bottom: 14px;
+  }
+  .paper-body { margin-bottom: 18px; }
+  .paper-signoff {
+    font-style: italic;
+    font-size: 20px;
+    text-align: right;
+  }
+
+  .grass {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 110px;
+    z-index: 1;
+    pointer-events: none;
+  }
+
+  .hen-fly {
+    position: fixed;
+    top: 16%;
+    left: 0;
+    width: 130px;
+    z-index: 20;
+    cursor: pointer;
+    animation: flyAcross 17s ease-in-out infinite;
+  }
+  .hen-fly svg { display: block; width: 100%; overflow: visible; pointer-events: none; }
+
+  @keyframes flyAcross {
+    0%   { transform: translate(-20vw, 6vh)  rotate(-4deg); }
+    20%  { transform: translate(15vw, -6vh)  rotate(3deg); }
+    40%  { transform: translate(45vw, 4vh)   rotate(-3deg); }
+    60%  { transform: translate(70vw, -8vh)  rotate(4deg); }
+    80%  { transform: translate(95vw, 2vh)   rotate(-2deg); }
+    100% { transform: translate(122vw, -4vh) rotate(3deg); }
+  }
+
+  /* hen speech bubble — appears when the hen is tapped */
+  .hen-bubble {
+    position: absolute;
+    top: -18px;
+    left: 50%;
+    transform: translateX(-50%) translateY(6px) scale(0.7);
+    background: #FFFBEF;
+    border: 2px dashed var(--ink);
+    border-radius: 10px;
+    padding: 7px 12px;
+    color: var(--ink);
+    font-family: Georgia, serif;
+    font-size: 14px;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s ease, transform 0.25s ease;
+    z-index: 21;
+  }
+  .hen-bubble::after {
+    content: "";
+    position: absolute;
+    bottom: -7px;
+    left: 50%;
+    transform: translateX(-50%) rotate(45deg);
+    width: 10px;
+    height: 10px;
+    background: #FFFBEF;
+    border-right: 2px dashed var(--ink);
+    border-bottom: 2px dashed var(--ink);
+  }
+  .hen-bubble.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0) scale(1);
+  }
+</style>
+</head>
+<body>
+
+  <div class="aurora">
+    <div class="ribbon r1"></div>
+    <div class="ribbon r2"></div>
+    <div class="ribbon r3"></div>
+    <div class="ribbon r4"></div>
+  </div>
+
+  <div class="sky-depth"></div>
+  <div class="glow"></div>
+  <div class="stars" id="stars"></div>
+  <div class="grass" id="grass"></div>
+  <div class="field" id="field"></div>
+
+  <div class="hen-fly" id="henFly">
+    <div class="hen-bubble" id="henBubble"></div>
+    <svg viewBox="0 0 140 100" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <filter id="henCrayon" x="-25%" y="-25%" width="150%" height="150%">
+          <feTurbulence type="fractalNoise" baseFrequency="0.05 0.08" numOctaves="2" seed="21" result="n"/>
+          <feDisplacementMap in="SourceGraphic" in2="n" scale="3.5"/>
+        </filter>
+      </defs>
+      <g filter="url(#henCrayon)">
+
+        <path d="M38,50 C20,42 10,48 4,40" stroke="var(--tail)" stroke-width="3" fill="none" stroke-linecap="round" stroke-dasharray="2.4 1 1.8 1"/>
+        <path d="M40,58 C22,56 12,60 6,56" stroke="var(--tail)" stroke-width="3" fill="none" stroke-linecap="round" stroke-dasharray="2.4 1 1.8 1"/>
+
+        <path d="M64,80 C62,88 58,90 54,94" stroke="var(--beak)" stroke-width="2.4" fill="none" stroke-linecap="round"/>
+        <path d="M78,80 C80,88 84,90 88,93" stroke="var(--beak)" stroke-width="2.4" fill="none" stroke-linecap="round"/>
+
+        <ellipse cx="70" cy="55" rx="38" ry="27" fill="var(--hen-body)" fill-opacity="0.92" stroke="var(--ink)" stroke-width="2.6" stroke-dasharray="2.6 1 2 1"/>
+
+        <g transform="translate(62,50)">
+          <animateTransform attributeName="transform" type="rotate" values="-22;24;-22" dur="0.55s" repeatCount="indefinite" additive="sum"/>
+          <path d="M0,0 C16,-8 30,-2 26,14 C20,22 4,18 -4,10 Z" fill="var(--wing)" fill-opacity="0.9" stroke="var(--ink)" stroke-width="2.2" stroke-linejoin="round" stroke-dasharray="2.2 1 1.6 1"/>
+        </g>
+
+        <circle cx="110" cy="36" r="16" fill="var(--hen-body)" fill-opacity="0.92" stroke="var(--ink)" stroke-width="2.4" stroke-dasharray="2.4 1 1.8 1"/>
+
+        <path d="M100,22 C99,14 104,12 105,18 C107,11 112,11 112,18 C114,12 119,14 117,22 Z" fill="var(--comb)" stroke="var(--ink)" stroke-width="1.8" stroke-linejoin="round"/>
+
+        <path d="M110,48 C107,53 108,58 112,58 C115,58 115,52 110,48 Z" fill="var(--comb)" stroke="var(--ink)" stroke-width="1.6"/>
+
+        <path d="M124,34 L136,37 L124,41 Z" fill="var(--beak)" stroke="var(--ink)" stroke-width="1.8" stroke-linejoin="round"/>
+
+        <circle cx="114" cy="32" r="2.2" fill="var(--ink)"/>
+      </g>
+    </svg>
+  </div>
+
+  <svg class="grain" width="100%" height="100%">
+    <filter id="paperNoise">
+      <feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="3" seed="4"/>
+      <feColorMatrix type="saturate" values="0"/>
+    </filter>
+    <rect width="100%" height="100%" filter="url(#paperNoise)"/>
+  </svg>
+
+  <div class="gift-wrap" id="giftWrap">
+    <svg class="box-body" viewBox="0 0 300 190" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <filter id="giftCrayon" x="-20%" y="-20%" width="140%" height="140%">
+          <feTurbulence type="fractalNoise" baseFrequency="0.04 0.07" numOctaves="2" seed="12" result="n"/>
+          <feDisplacementMap in="SourceGraphic" in2="n" scale="4"/>
+        </filter>
+      </defs>
+      <g filter="url(#giftCrayon)">
+        <rect x="18" y="14" width="264" height="168" rx="10" fill="#FFC93C" fill-opacity="0.9" stroke="#4A3016" stroke-width="3" stroke-dasharray="3 1.2 2.2 1"/>
+        <rect x="126" y="10" width="48" height="176" fill="#E23B2E" fill-opacity="0.9" stroke="#4A3016" stroke-width="3" stroke-dasharray="3 1.2 2.2 1"/>
+        <line x1="230" y1="150" x2="265" y2="170" stroke="#4A3016" stroke-width="2" opacity="0.35"/>
+        <line x1="238" y1="140" x2="270" y2="158" stroke="#4A3016" stroke-width="2" opacity="0.3"/>
+      </g>
+    </svg>
+
+    <svg class="box-lid" viewBox="0 0 320 100" xmlns="http://www.w3.org/2000/svg">
+      <g filter="url(#giftCrayon)">
+        <rect x="6" y="34" width="308" height="52" rx="12" fill="#FFDA5C" fill-opacity="0.92" stroke="#4A3016" stroke-width="3" stroke-dasharray="3 1.2 2.2 1"/>
+        <rect x="0" y="46" width="320" height="28" fill="#D93425" fill-opacity="0.92" stroke="#4A3016" stroke-width="3" stroke-dasharray="3 1.2 2.2 1"/>
+        <path d="M160,44 C140,10 96,14 100,40 C103,58 138,52 160,44 Z" fill="#E23B2E" stroke="#4A3016" stroke-width="2.6" stroke-linejoin="round" stroke-dasharray="2.6 1 2 1"/>
+        <path d="M160,44 C180,10 224,14 220,40 C217,58 182,52 160,44 Z" fill="#E23B2E" stroke="#4A3016" stroke-width="2.6" stroke-linejoin="round" stroke-dasharray="2.6 1 2 1"/>
+        <rect x="149" y="36" width="22" height="18" rx="4" fill="#B32418" stroke="#4A3016" stroke-width="2.4"/>
+        <path d="M152,50 L146,70 L158,62 Z" fill="#D93425" stroke="#4A3016" stroke-width="2"/>
+        <path d="M168,50 L176,68 L163,61 Z" fill="#D93425" stroke="#4A3016" stroke-width="2"/>
+      </g>
+    </svg>
+  </div>
+
+  <div class="paper" id="paperCard">
+    <div class="paper-tape"></div>
+    <button class="paper-close" id="paperClose" aria-label="Close">✕</button>
+    <div class="paper-content" id="paperMessage">
+      <p class="paper-greeting">Happy Birthday Nars!!</p>
+      <p class="paper-body">Now you're also wiser, older and more matured than ever. To think our friendship made it this far is always a happy fact for me, i hope that it can continue until we're adults na may ambag na sa lipunan. But lets set those pagtanda thoughts, and appreciate the present we are given, I am glad to be a witness of your growth. Kaya mo'yan i always said, Because i am confident in you reaching your dreams and i am forever glad to be one your of biggest supporters, More birthdays, More kalokohan, More sleepwell and kumain kanaba for you! and i know we are currently in state of changes but i wanna tell you that i love you(as a friend).</p>
+      <p class="paper-signoff">Happiest birthday Alex.</p>
+    </div>
+  </div>
+
+  <script>
+    function buildStars() {
+      const stars = document.getElementById('stars');
+      stars.innerHTML = '';
+      const count = Math.floor((window.innerWidth * window.innerHeight) / 9000);
+      for (let i = 0; i < count; i++) {
+        const s = document.createElement('div');
+        s.className = 'star';
+        const size = 1.5 + Math.random() * 2;
+        s.style.width = size + 'px';
+        s.style.height = size + 'px';
+        s.style.left = Math.random() * 100 + '%';
+        s.style.top = (Math.random() * 62) + '%';
+        s.style.animationDuration = (2 + Math.random() * 3) + 's';
+        s.style.animationDelay = (-Math.random() * 4) + 's';
+        stars.appendChild(s);
+      }
+    }
+
+
+    function crayonFilter(id, seed) {
+      return `
+        <filter id="${id}" x="-30%" y="-30%" width="160%" height="160%">
+          <feTurbulence type="fractalNoise" baseFrequency="0.045 0.09" numOctaves="2" seed="${seed}" result="n"/>
+          <feDisplacementMap in="SourceGraphic" in2="n" scale="5"/>
+        </filter>
+      `;
+    }
+
+    function petalPath() {
+      const j = () => (Math.random() * 4 - 2);
+      return `M0,0
+        C ${-6+j()},${-8+j()} ${-8+j()},${-19+j()} ${-3+j()},${-27+j()}
+        C ${-1+j()},${-31+j()} ${1+j()},${-31+j()} ${3+j()},${-27+j()}
+        C ${8+j()},${-19+j()} ${6+j()},${-8+j()} 0,0 Z`;
+    }
+
+    function crayonDash() {
+      const a = 2 + Math.random() * 2, b = 0.8 + Math.random(), c = 1.5 + Math.random() * 1.5;
+      return `${a.toFixed(1)} ${b.toFixed(1)} ${c.toFixed(1)} ${b.toFixed(1)}`;
+    }
+
+    function seedMarks() {
+      let marks = '';
+      for (let ring = 0; ring < 3; ring++) {
+        const r = 4 + ring * 4;
+        const count = 6 + ring * 4;
+        for (let i = 0; i < count; i++) {
+          const a = (i / count) * Math.PI * 2 + ring;
+          const x1 = Math.cos(a) * r, y1 = Math.sin(a) * r;
+          const x2 = Math.cos(a) * (r + 2.5), y2 = Math.sin(a) * (r + 2.5);
+          marks += `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="var(--ink)" stroke-width="1.1" stroke-linecap="round" opacity="0.55"/>`;
+        }
+      }
+      return marks;
+    }
+
+    function flowerSVG(scale, petalCount, uid) {
+      const stemWobble = 8 * (Math.random() > 0.5 ? 1 : -1) * Math.random();
+      let petals = '';
+      for (let i = 0; i < petalCount; i++) {
+        const rot = (360 / petalCount) * i + (Math.random() * 6 - 3);
+        petals += `<path d="${petalPath()}" transform="rotate(${rot})" fill="var(--petal)" fill-opacity="0.82"
+          stroke="var(--ink)" stroke-width="1.7" stroke-linejoin="round"
+          stroke-dasharray="${crayonDash()}"/>`;
+      }
+      let leaves = `
+        <path d="M27,95 C10,88 2,102 10,116 C16,108 22,102 27,95 Z" fill="var(--leaf)" fill-opacity="0.82" stroke="var(--ink)" stroke-width="1.6" stroke-dasharray="${crayonDash()}"/>
+        <line x1="27" y1="95" x2="12" y2="112" stroke="var(--ink)" stroke-width="1" opacity="0.5"/>
+        <path d="M33,78 C50,72 58,88 49,99 C43,90 38,84 33,78 Z" fill="var(--leaf)" fill-opacity="0.82" stroke="var(--ink)" stroke-width="1.6" stroke-dasharray="${crayonDash()}"/>
+        <line x1="33" y1="78" x2="48" y2="96" stroke="var(--ink)" stroke-width="1" opacity="0.5"/>
+      `;
+
+      return `
+        <svg width="${64 * scale}" height="${145 * scale}" viewBox="0 0 60 145">
+          <g>
+            <path d="M27,58 Q${27+stemWobble},95 30,140" stroke="var(--stem)" stroke-width="5" fill="none" stroke-linecap="round" stroke-dasharray="${crayonDash()}"/>
+            ${leaves}
+            <g transform="translate(30,32)">
+              ${petals}
+              <circle r="15" fill="var(--center)" fill-opacity="0.85" stroke="var(--ink)" stroke-width="1.8" stroke-dasharray="${crayonDash()}"/>
+              ${seedMarks()}
+            </g>
+          </g>
+        </svg>
+      `;
+    }
+
+    function buildField() {
+      const field = document.getElementById('field');
+      field.innerHTML = '';
+      const spacing = 14;
+      const count = Math.ceil(window.innerWidth / spacing) + 12;
+      for (let i = 0; i < count; i++) {
+        const scale = 0.75 + Math.random() * 0.6;
+        const petalCount = 10 + Math.floor(Math.random() * 4);
+        const tilt = (Math.random() * 6 - 3);
+        const outer = document.createElement('div');
+        outer.className = 'sunflower';
+        outer.style.position = 'absolute';
+        outer.style.left = (i * spacing - 20 + Math.random() * 18) + 'px';
+        outer.style.bottom = (-14 + Math.random() * 20) + 'px';
+        outer.style.zIndex = Math.floor(scale * 10);
+        outer.style.transform = `rotate(${tilt}deg)`;
+        const inner = document.createElement('div');
+        inner.className = 'sway';
+        inner.style.animationDelay = (-Math.random() * 5) + 's';
+        inner.style.animationDuration = (3.8 + Math.random() * 1.6) + 's';
+        inner.innerHTML = flowerSVG(scale, petalCount, i);
+        outer.appendChild(inner);
+        field.appendChild(outer);
+      }
+    }
+
+    function buildGrass() {
+      const grass = document.getElementById('grass');
+      const w = window.innerWidth;
+      const spacing = 6;
+      const count = Math.ceil(w / spacing);
+      let blades = '';
+      for (let i = 0; i < count; i++) {
+        const x = i * spacing + (Math.random() * 3 - 1.5);
+        const h = 16 + Math.random() * 26;
+        const lean = (Math.random() * 12 - 6);
+        const color = Math.random() > 0.5 ? 'var(--grass)' : 'var(--leaf)';
+        const width = (1.6 + Math.random() * 1.4).toFixed(1);
+        const d = `M${x.toFixed(1)},100 Q${(x+lean).toFixed(1)},${(100-h*0.6).toFixed(1)} ${(x+lean*1.4).toFixed(1)},${(100-h).toFixed(1)}`;
+        blades += `<path d="${d}" stroke="var(--grass-dark)" stroke-width="${(parseFloat(width)+1.6).toFixed(1)}" fill="none" stroke-linecap="round" opacity="0.35"/>`;
+        blades += `<path d="${d}" stroke="${color}" stroke-width="${width}" fill="none" stroke-linecap="round"/>`;
+      }
+      grass.innerHTML = `
+        <svg width="100%" height="100%" viewBox="0 0 ${w} 110" preserveAspectRatio="none">
+          <defs>
+            <filter id="grassCrayon" x="-5%" y="-20%" width="110%" height="140%">
+              <feTurbulence type="fractalNoise" baseFrequency="0.01 0.06" numOctaves="2" seed="9" result="n"/>
+              <feDisplacementMap in="SourceGraphic" in2="n" scale="4"/>
+            </filter>
+          </defs>
+          <g filter="url(#grassCrayon)">${blades}</g>
+        </svg>
+      `;
+    }
+
+    buildStars();
+    buildField();
+    buildGrass();
+    let resizeTimer;
+    window.addEventListener('resize', () => {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(() => { buildStars(); buildField(); buildGrass(); }, 200);
+    });
+
+    const giftWrap = document.getElementById('giftWrap');
+    const lid = document.querySelector('.box-lid');
+    const paper = document.getElementById('paperCard');
+    const paperClose = document.getElementById('paperClose');
+
+    lid.addEventListener('click', () => {
+      giftWrap.classList.add('opened');
+      setTimeout(() => paper.classList.add('show'), 280);
+    });
+
+    paperClose.addEventListener('click', () => {
+      paper.classList.remove('show');
+      giftWrap.classList.remove('opened');
+    });
+
+    const henFly = document.getElementById('henFly');
+    const henBubble = document.getElementById('henBubble');
+    const henPhrases = ["kumain kana?", "Pero nag beg ka?", "Whatever", "Nu oras ka tutulog", "sabay", "Megatron", "Arasso", "May pasok ka?", "Sleepwell", "suss", "ingat", "eatwell"];
+    let henBubbleTimer;
+
+    henFly.addEventListener('click', () => {
+      const phrase = henPhrases[Math.floor(Math.random() * henPhrases.length)];
+      henBubble.textContent = phrase;
+      henBubble.classList.add('show');
+      clearTimeout(henBubbleTimer);
+      henBubbleTimer = setTimeout(() => henBubble.classList.remove('show'), 2200);
+    });
+  </script>
+
+</body>
+</html>
